@@ -9,7 +9,8 @@ const { targetDate } = Astro.props;
   <div class="countdown-container">
     <div class="countdown-label">Užkampis po..</div>
     <div class="countdown-timer" data-target={targetDate}>
-      <span class="days">00</span>:<span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>
+      <div class="days-line"><span class="days">0</span> dienos</div>
+      <div class="time-line"><span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span></div>
     </div>
   </div>
 </div>
@@ -24,7 +25,7 @@ const { targetDate } = Astro.props;
 
     if (diff <= 0) {
       // Countdown finished
-      document.querySelector('.days').textContent = '00';
+      document.querySelector('.days').textContent = '0';
       document.querySelector('.hours').textContent = '00';
       document.querySelector('.minutes').textContent = '00';
       document.querySelector('.seconds').textContent = '00';
@@ -36,7 +37,7 @@ const { targetDate } = Astro.props;
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    document.querySelector('.days').textContent = String(days).padStart(2, '0');
+    document.querySelector('.days').textContent = String(days);
     document.querySelector('.hours').textContent = String(hours).padStart(2, '0');
     document.querySelector('.minutes').textContent = String(minutes).padStart(2, '0');
     document.querySelector('.seconds').textContent = String(seconds).padStart(2, '0');
@@ -74,11 +75,23 @@ const { targetDate } = Astro.props;
 
   .countdown-timer {
     font-family: 'Courier New', monospace;
-    font-size: 3.5rem;
     font-weight: bold;
     color: white;
-    letter-spacing: 0.1em;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .days-line {
+    font-size: 3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .time-line {
+    font-size: 3.5rem;
+    letter-spacing: 0.1em;
   }
 
   @media (max-width: 768px) {
@@ -91,7 +104,11 @@ const { targetDate } = Astro.props;
       margin-bottom: 10px;
     }
 
-    .countdown-timer {
+    .days-line {
+      font-size: 1.5rem;
+    }
+
+    .time-line {
       font-size: 1.8rem;
     }
   }
