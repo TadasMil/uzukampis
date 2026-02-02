@@ -23,7 +23,7 @@ const { targetId, label } = Astro.props;
 
 <style>
   .nav-button {
-    position: absolute;
+    position: fixed;
     top: 40px;
     left: 50%;
     transform: translateX(-50%);
@@ -48,9 +48,9 @@ const { targetId, label } = Astro.props;
 
   @media (max-width: 768px) {
     .nav-button {
-      top: 40px;
-      font-size: 0.9rem;
-      padding: 12px 24px;
+      top: 20px;
+      font-size: 0.85rem;
+      padding: 10px 20px;
     }
   }
 </style>
