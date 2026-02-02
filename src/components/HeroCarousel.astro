@@ -1,11 +1,12 @@
 ---
 import CountdownTimer from './CountdownTimer.astro';
 
+const baseUrl = import.meta.env.BASE_URL;
 const heroImages = [
-  '/assets/hero-header-1.webp',
-  '/assets/hero-header-2.webp',
-  '/assets/hero-header-3.webp',
-  '/assets/hero-header-4.webp'
+  `${baseUrl}assets/hero-header-1.webp`,
+  `${baseUrl}assets/hero-header-2.webp`,
+  `${baseUrl}assets/hero-header-3.webp`,
+  `${baseUrl}assets/hero-header-4.webp`
 ];
 ---
 
