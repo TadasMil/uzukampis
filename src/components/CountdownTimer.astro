@@ -1,0 +1,98 @@
+---
+interface Props {
+  targetDate: string; // ISO date string
+}
+const { targetDate } = Astro.props;
+---
+
+<div class="countdown-overlay">
+  <div class="countdown-container">
+    <div class="countdown-label">Užkampis po..</div>
+    <div class="countdown-timer" data-target={targetDate}>
+      <span class="days">00</span>:<span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const timerElement = document.querySelector('.countdown-timer');
+  const targetDate = new Date(timerElement.dataset.target);
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = targetDate - now;
+
+    if (diff <= 0) {
+      // Countdown finished
+      document.querySelector('.days').textContent = '00';
+      document.querySelector('.hours').textContent = '00';
+      document.querySelector('.minutes').textContent = '00';
+      document.querySelector('.seconds').textContent = '00';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.querySelector('.days').textContent = String(days).padStart(2, '0');
+    document.querySelector('.hours').textContent = String(hours).padStart(2, '0');
+    document.querySelector('.minutes').textContent = String(minutes).padStart(2, '0');
+    document.querySelector('.seconds').textContent = String(seconds).padStart(2, '0');
+  }
+
+  // Update immediately and then every second
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+
+<style>
+  .countdown-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+  }
+
+  .countdown-container {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 30px 50px;
+    border-radius: 20px;
+    text-align: center;
+  }
+
+  .countdown-label {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .countdown-timer {
+    font-family: 'Courier New', monospace;
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .countdown-container {
+      padding: 20px 30px;
+    }
+
+    .countdown-label {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .countdown-timer {
+      font-size: 1.8rem;
+    }
+  }
+</style>

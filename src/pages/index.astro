@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroCarousel from '../components/HeroCarousel.astro';
+import NavigationButton from '../components/NavigationButton.astro';
+import GallerySection from '../components/GallerySection.astro';
+
+// Gallery data
+const galleryData = [
+  {
+    id: 'kitchen',
+    title: 'Virtuvė',
+    images: ['/assets/kitchen-1.png', '/assets/kitchen-2.png'],
+    background: 'linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%)'
+  },
+  {
+    id: 'room',
+    title: 'Kambarys',
+    images: ['/assets/room-1.png', '/assets/room-2.png'],
+    background: 'linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%)'
+  },
+  {
+    id: 'bathroom',
+    title: 'Vonios kambarys',
+    images: ['/assets/bathroom-1.png', '/assets/bathroom-2.png', '/assets/bathroom-3.png'],
+    background: 'linear-gradient(135deg, #F0F9FF 0%, #DBEAFE 100%)'
+  }
+];
+---
+
+<Layout>
+  <HeroCarousel />
+  <NavigationButton targetId="kitchen" label="Peržiūrėti virtuvę" />
+
+  <main>
+    {galleryData.map(section => (
+      <GallerySection
+        sectionId={section.id}
+        title={section.title}
+        images={section.images}
+        background={section.background}
+      />
+    ))}
+  </main>
+</Layout>
+
+<script>
+  // Sequential navigation configuration
+  const navigationStates = [
+    { section: 'hero', label: 'Peržiūrėti virtuvę', target: 'kitchen' },
+    { section: 'kitchen', label: 'Peržiūrėti kambarius', target: 'room' },
+    { section: 'room', label: 'Peržiūrėti vonią', target: 'bathroom' },
+    { section: 'bathroom', label: 'Į pradžią', target: 'hero' }
+  ];
+
+  let currentSection = 'hero';
+
+  // Update button based on current section
+  function updateButton() {
+    const button = document.querySelector('.nav-button');
+    if (!button) return;
+
+    const state = navigationStates.find(s => s.section === currentSection);
+    if (state) {
+      if (state.label === '') {
+        button.style.display = 'none';
+      } else {
+        button.style.display = 'block';
+        button.textContent = state.label;
+        button.dataset.target = state.target;
+      }
+    }
+  }
+
+  // Observe sections to detect current section
+  const observerOptions = {
+    threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+    rootMargin: '0px'
+  };
+
+  let visibleSections = new Map();
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0) {
+        visibleSections.set(entry.target.id, entry.intersectionRatio);
+      } else {
+        visibleSections.delete(entry.target.id);
+      }
+    });
+
+    // Find the section with highest intersection ratio
+    if (visibleSections.size > 0) {
+      let maxRatio = 0;
+      let maxSection = 'hero';
+
+      visibleSections.forEach((ratio, sectionId) => {
+        if (ratio > maxRatio) {
+          maxRatio = ratio;
+          maxSection = sectionId;
+        }
+      });
+
+      if (currentSection !== maxSection) {
+        currentSection = maxSection;
+        updateButton();
+      }
+    }
+  }, observerOptions);
+
+  // Observe hero carousel
+  const heroCarousel = document.querySelector('.hero-carousel');
+  if (heroCarousel) {
+    heroCarousel.id = 'hero';
+    sectionObserver.observe(heroCarousel);
+  }
+
+  // Observe all gallery sections
+  document.querySelectorAll('.gallery-section').forEach(section => {
+    sectionObserver.observe(section);
+  });
+
+  // Initial button update
+  updateButton();
+</script>
+

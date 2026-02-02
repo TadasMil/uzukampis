@@ -1,0 +1,56 @@
+---
+interface Props {
+  targetId: string; // ID of section to scroll to
+  label: string;
+}
+const { targetId, label } = Astro.props;
+---
+
+<button class="nav-button" data-target={targetId}>
+  {label}
+</button>
+
+<script>
+  const button = document.querySelector('.nav-button');
+  button.addEventListener('click', () => {
+    const targetId = button.dataset.target;
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+
+<style>
+  .nav-button {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+  }
+
+  .nav-button:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563EB 100%);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+    transform: translateX(-50%) translateY(-2px) scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .nav-button {
+      top: 10px;
+      font-size: 0.9rem;
+      padding: 12px 24px;
+    }
+  }
+</style>
